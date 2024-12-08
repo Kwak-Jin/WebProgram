@@ -84,7 +84,7 @@ aside ul li {
 }
 
 aside ul li:hover {
-    background-color: #4CAF50;
+    background-color: #0066cc;
     color: white;
 }
 
@@ -124,12 +124,12 @@ section#article-container {
 .article-content button {
     padding: 8px 15px;
     border: none;
-    background-color: #4CAF50;
+    background-color: #0066cc;
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .article-content button:hover {
-    background-color: #45a049;
+    background-color: #00afff;
 }

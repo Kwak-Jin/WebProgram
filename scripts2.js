@@ -88,4 +88,3 @@ function applyToClub(clubName) {
     alert(`Move to Application page for club (${clubName})`);
     window.open(`apply.html?club=${encodeURIComponent(clubName)}`, '_blank');
 }
-
