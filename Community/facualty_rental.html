@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Integrated Facility Reservation System</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #003b5c;}
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 1px; }
+    .day { border: 1px solid #ccc; min-height: 100px; padding: 5px; display: flex; flex-direction: column; align-items: center; background-color: white; }
+    #modal { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); }
+    #modal-content { background: white; margin: 15% auto; padding: 20px; width: 300px; }
+    label { display: block; margin-top: 10px; margin-right: 10px; }
+    input[type="text"], select, input[type="submit"], button { width: 100%; padding: 8px; margin-top: 5px; }
+    input[type="submit"], button { background-color: #4CAF50; color: white; border: none; cursor: pointer; padding: 10px; margin-top: 10px; }
+    button.apply-button { background-color: #007BFF; } /* Blue button for applying */
+    button.close-button { background-color: #4CAF50; } /* Green button for close, aligned below Send */
+</style>
+<script>
+    const reservations = {}; // To store reservations
+
+    function openForm() {
+        document.getElementById('modal').style.display = 'block';
+    }
+
+    function closeForm() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function submitForm() {
+        const location = document.getElementById('location').value;
+        const date = document.getElementById('date').value;
+        const timeSlot = document.getElementById('time-slot').value;
+        const name = document.getElementById('name').value;
+
+        if (!date || !timeSlot || !location || !name) {
+            alert('Please fill in all fields.');
+            return false;
+        }
+
+        // Check for duplicate reservations
+        if (!reservations[date]) {
+            reservations[date] = {};
+        }
+        if (!reservations[date][location]) {
+            reservations[date][location] = {};
+        }
+        if (reservations[date][location][timeSlot]) {
+            alert('This time slot is already reserved for this location.');
+            return false;
+        }
+
+        // Save reservation
+        reservations[date][location][timeSlot] = name;
+
+        // Display reservation on the calendar
+        const dayElement = document.getElementById(date);
+        if (dayElement) {
+            dayElement.innerHTML += `<br>${location} (${timeSlot}) - ${name}`;
+        }
+
+        closeForm();
+        alert('Your reservation has been successfully submitted.');
+        return false; // Prevent form submission
+    }
+
+    window.onload = function() {
+        const startDate = new Date('2024-12-01');
+        const calendarDiv = document.querySelector('.calendar');
+        for (let i = 0; i < 35; i++) { // 5 weeks of 7 days each
+            const day = new Date(startDate);
+            day.setDate(day.getDate() + i);
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day';
+            dayDiv.id = day.toISOString().slice(0, 10);
+            dayDiv.textContent = day.toISOString().slice(0, 10);
+            calendarDiv.appendChild(dayDiv);
+        }
+
+        // Initialize Flatpickr for the date input field
+        flatpickr("#date", {
+            dateFormat: "Y-m-d", // YYYY-MM-DD format
+            locale: "en" // Force English language
+        });
+    };
+</script>
+</head>
+<body>
+<h1 style="color: white;">Facility Reservation</h1>
+<div class="calendar"></div>
+<button class="apply-button" onclick="openForm()">Apply for Reservation</button>
+
+<div id="modal">
+    <div id="modal-content">
+        <form onsubmit="return submitForm();">
+            <label for="location">Location you want to use:</label>
+            <select id="location" name="location" required>
+                <option value="Band Practice Room">Band Practice Room</option>
+                <option value="Large CCR">Large CCR</option>
+                <option value="Medium CCR">Medium CCR</option>
+                <option value="Basement Medium Practice Room">Basement Medium Practice Room</option>
+                <option value="Basement Large Practice Room">Basement Large Practice Room</option>
+            </select>
+
+            <label for="date">Date:</label>
+            <input type="text" id="date" name="date" placeholder="YYYY-MM-DD" required>
+
+            <label for="time-slot">Time Slot:</label>
+            <select id="time-slot" name="time-slot" required>
+                <option value="09:00 AM - 12:00 PM">09:00 AM - 12:00 PM</option>
+                <option value="12:00 PM - 03:00 PM">12:00 PM - 03:00 PM</option>
+                <option value="03:00 PM - 06:00 PM">03:00 PM - 06:00 PM</option>
+                <option value="06:00 PM - 09:00 PM">06:00 PM - 09:00 PM</option>
+            </select>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <input type="submit" value="Send">
+            <button type="button" onclick="closeForm()" class="close-button">Close</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

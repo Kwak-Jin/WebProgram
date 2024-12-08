@@ -30,6 +30,20 @@ main {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar input {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -72,10 +86,10 @@ footer {
     background-color: #003b5c;
     color: white;
     text-align: center;
-    padding: 15px;
+    padding: 0px;
     position: fixed;
     width: 100%;
-    bottom: 0;
+    bottom: 0px;
 }
     </style>
 </head>
@@ -84,6 +98,9 @@ footer {
         <h1>Announcement</h1>
     </header>
     <main>
+        <section class="search-bar">
+            <input type="text" id="search-input" placeholder="Search for announcements..." onkeyup="filterNotices()">
+        </section>
         <section class="notice-board">
             <table>
                 <thead>
@@ -191,6 +208,23 @@ footer {
             document.getElementById('view-count-4').textContent = viewCount4;
             document.getElementById('view-count-5').textContent = viewCount5;
         };
+            // 공지 필터링 함수
+        function filterNotices() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const noticeList = document.getElementById('notice-list').getElementsByTagName('tr');
+
+            for (let i = 0; i < noticeList.length; i++) {
+                const titleCell = noticeList[i].getElementsByTagName('td')[1];
+                if (titleCell) {
+                    const titleText = titleCell.textContent || titleCell.innerText;
+                    if (titleText.toLowerCase().indexOf(searchInput) > -1) {
+                        noticeList[i].style.display = '';
+                    } else {
+                        noticeList[i].style.display = 'none';
+                    }
+                }
+            }
+        }
     </script>
 </body>
 </html>
